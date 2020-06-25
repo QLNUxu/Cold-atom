@@ -15,27 +15,27 @@ P  = (2*pi*hb/L)*[0:nx/2-1,-nx/2:-1]; %momentum separation
 
 %% bang-bang
 syms a
-gN    = -1;
+gN    = 0.2;
 C     = 0.407052;
 w_0   = 20*2*pi;
 w_i   = 20*2*pi/w_0;
 w_f   = 5*2*pi/w_0; %intial and final frequency 
-a_i   = double(vpasolve(a*w_i^2-1/(a^3)-C*gN/(a^2*sqrt(pi*2))==0,a,[0,inf]));%intial width
-a_f   = double(vpasolve(a*w_f^2-1/(a^3)-C*gN/(a^2*sqrt(pi*2))==0,a,[0,inf]));% final width
-w_ix  = 1/a_i^2;
-w_fx  = 1/a_f^2;
-beta  = a_i; 
-gamma = a_f;
-d     = w_i^2; % delta
-C1    = -d*beta^2 + 1/(beta^2)+2*C*gN/(sqrt(2*pi)*beta);
-C2    = d*gamma^2 + 1/(gamma^2)+2*C*gN/(sqrt(2*pi)*gamma);%inytegrated cofficienr
-x1B   = sqrt((C2-C1)/(2*d)); % xB
-fun1  = @(s)sqrt(1./(C1+d.*s.^2-1./(s.^2)-2*C*gN./(sqrt(2*pi).*s)));
-t1    = integral(fun1,beta,x1B); % time for first segment
-fun2  = @(s)sqrt(1./(C2-d.*s.^2-1./(s.^2)-2*C*gN./(sqrt(2*pi).*s)));
-t2    = integral(fun2,x1B,gamma); % time for second segment
-T     = t1+t2;                       % total time
-% T     = 40;
+% a_i   = double(vpasolve(a*w_i^2-1/(a^3)-C*gN/(a^2*sqrt(pi*2))==0,a,[0,inf]));%intial width
+% a_f   = double(vpasolve(a*w_f^2-1/(a^3)-C*gN/(a^2*sqrt(pi*2))==0,a,[0,inf]));% final width
+% w_ix  = 1/a_i^2;
+% w_fx  = 1/a_f^2;
+% beta  = a_i; 
+% gamma = a_f;
+% d     = w_i^2; % delta
+% C1    = -d*beta^2 + 1/(beta^2)+2*C*gN/(sqrt(2*pi)*beta);
+% C2    = d*gamma^2 + 1/(gamma^2)+2*C*gN/(sqrt(2*pi)*gamma);%inytegrated cofficienr
+% x1B   = sqrt((C2-C1)/(2*d)); % xB
+% fun1  = @(s)sqrt(1./(C1+d.*s.^2-1./(s.^2)-2*C*gN./(sqrt(2*pi).*s)));
+% t1    = integral(fun1,beta,x1B); % time for first segment
+% fun2  = @(s)sqrt(1./(C2-d.*s.^2-1./(s.^2)-2*C*gN./(sqrt(2*pi).*s)));
+% t2    = integral(fun2,x1B,gamma); % time for second segment
+% T     = t1+t2;                       % total time
+T     = 10;
 nt    = 1 * 10^3 ;
 dt    = T / nt;
 % nt    = T / dt;
@@ -45,19 +45,19 @@ dt    = T / nt;
 % a(t) = a_f + (6*(a_i-a_f)*t^5)/T^5-(15*(a_i-a_f)*t^4)/T^4+(10*(a_i-a_f)*t^3)/T^3;
 % w2(t) = (1/a(t)^3 + gN*C/(sqrt(2*pi)*a(t)^2) - diff(a(t),2))/a(t);
 %% Eigenvalue and Eigenstate
-operator_a    = diag(sqrt(1:nx-1),1);                   % creation operator
-operator_adag = operator_a';                            % annihilate operator
-operator_x    = 1/sqrt(2)*(operator_adag + operator_a);
-operator_p    = 1i/sqrt(2)*(operator_adag - operator_a);
-operator_H    = operator_p^2/(2*m) + m*w_fx^2*operator_x^2/2;
+% operator_a    = diag(sqrt(1:nx-1),1);                   % creation operator
+% operator_adag = operator_a';                            % annihilate operator
+% operator_x    = 1/sqrt(2)*(operator_adag + operator_a);
+% operator_p    = 1i/sqrt(2)*(operator_adag - operator_a);
+% operator_H    = operator_p^2/(2*m) + m*w_fx^2*operator_x^2/2;
 eigval_States = 10 ;                            % How many state
 % Eig_Val       = eigs(operator_H,eigval_States,'smallestabs');
-V_i   = m*w_fx^2*X.^2/2;                 % harmonic oscillator
-V_f   = m*w_ix^2*X.^2/2;
-[ EigStai.H, EigStai.E, EigStai.U ] = H_eigen( V_i, eigval_States, X, dx, nx );
-[ EigStaf.H, EigStaf.E, EigStaf.U ] = H_eigen( V_f, eigval_States, X, dx, nx );
+% V_i   = m*w_fx^2*X.^2/2;                 % harmonic oscillator
+% V_f   = m*w_ix^2*X.^2/2;
+% [ EigStai.H, EigStai.E, EigStai.U ] = H_eigen( V_i, eigval_States, X, dx, nx );
+% [ EigStaf.H, EigStaf.E, EigStaf.U ] = H_eigen( V_f, eigval_States, X, dx, nx );
 
-an      = 4;
+an      = 3;
 K       = P.^2/(2*m);                % kinetic energy
 V       = m*w_f^2*X.^2/2;
 EigStat = zeros(nx,eigval_States);
@@ -95,7 +95,7 @@ spacetime=[];
 % Etx   = zeros(nt+1,1);
 % w     = zeros(nt+1,1);
 % x     = linspace(w_i,w_f,nt+1);
-for j = 0 : nt
+for j = 1 : nt
 
 %     if (j*(T/nt))==0
 %         w(j+1,1) = w_f^2;
@@ -112,7 +112,7 @@ for j = 0 : nt
 %     w(j+1,1) = (w_fx/(1-(w_ix-w_fx)*(j*(T/nt))/(T*w_ix)))^2;    % quasi-adiabatic
 %     w(j+1,1) = 
 
-    V        = m*w_f*X.^2/2 + gN*abs(psi(:,1)').^2;
+    V        = m*w_f^2*X.^2/2 + gN*abs(psi(:,1)').^2;
     UV       = exp(-1i*V/hb*dt);
     psi(:,1) = FFT( psi( :, 1 )', UV, UK )';
     if mod(j,nt/Nframe) == 0 %Save wavefunction every Nframe steps
@@ -128,13 +128,15 @@ for j = 0 : nt
 %     Etx(j+1,1) = sum(Et);
 %     at(j+1,1)  = sqrt(sum(conj(psi(:,1)).*X'.^2.*psi(:,1))*dx);
 end
+%%
 subplot(1,3,1); %Plot potential
 plot(X,V,'k'); xlabel('x (m)'); ylabel('V (J/hbar)');
 subplot(1,3,2); %Plot initial and final density
 plot(X,abs(psi_0).^2,'k',X,abs(psi).^2,'b');
 legend('\psi(x,0)','\psi(x,T)');xlabel('x (m)');ylabel('|\psi|^2 (m^{-1})');
 subplot(1,3,3); % Plot spacetime evolution as pcolor plot
-pcolor(X,(1:1:Nframe+1),spacetime); shading interp;
+dt_large=dt*double(nt/Nframe);
+pcolor(X,dt_large*(1:1:Nframe),spacetime); shading interp;
 xlabel('(m)'); ylabel('t (s)');
 % Ei      = 0;         % initial energy
 % Ef      = 0;         % final energy
